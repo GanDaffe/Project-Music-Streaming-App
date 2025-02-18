@@ -10,6 +10,7 @@ Cross-platform application development project.
 * Ứng dụng cho phép người dùng phát nhạc trực tuyến ngẫu nhiên hoặc theo playlist.
 * Mỗi bài hát sẽ có các loại thông tin như tên bài hát, thể loại, lượt xem, vv...
 * Ứng dụng có thể lưu lại lịch sử nghe nhạc của người dùng, những bài hát đã thích.
+* SoundClone có thể đề xuất nhạc dựa trên thể loại nhạc mà người dùng thường xuyên phát và độ phổ biến của bài hát đó. 
 * Ứng dụng cho phép người dùng theo dõi các nghệ sĩ yêu thích.
 * Người dùng có thể tìm kiếm nhạc theo tên bài hát hoặc theo thể loại mà mình yêu thích.
 
