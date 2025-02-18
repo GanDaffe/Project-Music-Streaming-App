@@ -1,9 +1,6 @@
 # **Project-Music-Streaming-App**
 Cross-platform application development project. 
 
-## **Biểu đồ phân rã chức năng (Business function diagram)**
-![image](https://github.com/user-attachments/assets/4bfdcd2c-0f31-40d2-a86e-ac16bb140e4a)
-
 ## **Đặc tả các yêu cầu nghiệp vụ**
 
 * Ứng dụng có chức năng cho phép người dùng tạo các playlist theo sở thích cá nhân.
@@ -13,6 +10,9 @@ Cross-platform application development project.
 * SoundClone có thể đề xuất nhạc dựa trên thể loại nhạc mà người dùng thường xuyên phát. 
 * Ứng dụng cho phép người dùng theo dõi các nghệ sĩ yêu thích.
 * Người dùng có thể tìm kiếm nhạc theo tên bài hát hoặc theo thể loại mà mình yêu thích.
+
+## **Biểu đồ phân rã chức năng (Business function diagram)**
+![image](https://github.com/user-attachments/assets/4bfdcd2c-0f31-40d2-a86e-ac16bb140e4a)
 
 ## **ERD (Entity–relationship model)**
 
