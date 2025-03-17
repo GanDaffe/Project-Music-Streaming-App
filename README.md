@@ -11,7 +11,13 @@
 
 ![477842310_2030290124127889_4362368252249997956_n](https://github.com/user-attachments/assets/75f16911-610d-4394-b205-49bbe4488962)
 
+* Đối với quản trị viên:
+1. Quản trị viên có tài khoản được khởi tạo sẵn, có giao diện riêng.
+2. Quản trị viên được phép tải các bài hát, album mới, thêm thông tin về nghệ sĩ, thể loại cho bài hát.
+3. Quản trị viên được cấp quyền quản lí dữ liệu về: thông tin về bài hát, thông tin thời gian phát nhạc.
+4. Quản trị viên có thể xuất báo cáo về những danh mục dữ liệu được cho phép.
 
+  
 ## **Sơ đồ ERD**  
   
 ![image](https://github.com/user-attachments/assets/06277aac-308f-41de-8873-b0c52ef9cba3)
