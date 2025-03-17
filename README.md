@@ -17,7 +17,8 @@
 3. Quản trị viên được cấp quyền quản lí dữ liệu về: thông tin về bài hát, thông tin thời gian phát nhạc.
 4. Quản trị viên có thể xuất báo cáo về những danh mục dữ liệu được cho phép.
 
-  
+![image](https://github.com/user-attachments/assets/d74127cb-0953-46a4-ac0f-3a6b9e457f5f)
+
 ## **Sơ đồ ERD**  
   
 ![image](https://github.com/user-attachments/assets/06277aac-308f-41de-8873-b0c52ef9cba3)
