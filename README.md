@@ -16,10 +16,9 @@
   
 ![image](https://github.com/user-attachments/assets/06277aac-308f-41de-8873-b0c52ef9cba3)
 
-1. Mỗi người dùng có thể có 0 hoặc nhiều playlist nhưng mỗi playlist chỉ có thể thuộc về một người dùng, hay playlist được tạo bởi một người dùng duy nhất. Do đó giữa USER và PLAYLIST có quan hệ 1:N.
-2. Mỗi playlist có thể có nhiều bài hát, và một bài hát cũng có thể nằm trong nhiều playlist khác nhau, do đó quan hệ giữa PLAYLIST và SONGS là N:N, thêm bảng PLAYLIST_SONG để quản lí hai bảng, tạo thành 2 mối quan hệ 1:N.
-3. Một người dùng có thể theo dõi nhiều nghệ sĩ và một nghệ sĩ cũng có nhiều người theo dõi, do đó quan hệ giữa USER và ARTIST là N:N, thông qua bảng trung gian FOLLOW_ARTIST để quản lí hai bảng, tạo thành 2 mối quan hệ 1:N.
+1. Mỗi người dùng có thể có không hoặc nhiều playlist, nhưng mỗi playlist chỉ thuộc về một người dùng duy nhất. Do đó, giữa USER và PLAYLIST có quan hệ 1:N.
+2. Mỗi playlist có thể chứa nhiều bài hát, và một bài hát có thể xuất hiện trong nhiều playlist khác nhau. Vì vậy, giữa PLAYLIST và SONGS có quan hệ N:N, được quản lý thông qua bảng trung gian PLAYLIST_SONG, tạo thành hai mối quan hệ 1:N.
+3. Người dùng có thể theo dõi nhiều nghệ sĩ, và một nghệ sĩ cũng có thể có nhiều người theo dõi. Do đó, giữa USER và ARTIST có quan hệ N:N, được quản lý qua bảng trung gian FOLLOW_ARTIST, hình thành hai mối quan hệ 1:N.
 4. Mỗi bài hát được trình diễn bởi một nghệ sĩ chính, nhưng một nghệ sĩ có thể trình diễn nhiều bài hát, do đó giữa ARTIST và SONGS là 1:N.
-5. Một người dùng có thể có 0 hoặc nhiều vai trò, một vai trò cũng có thể thuộc về 0 hoặc nhiều người, do đó, giữa USER và ROLE có mối quan hệ N:N, thông qua bảng trung gian USER_ROLE để quản lí 2 bảng, tạo thành 2 mối quan hệ 1:N.
+5. Người dùng có thể có không hoặc nhiều vai trò, và một vai trò cũng có thể thuộc về nhiều người dùng. Do đó, giữa USER và ROLE có quan hệ N:N, được quản lý qua bảng trung gian USER_ROLE, hình thành hai mối quan hệ 1:N.
 6. Một vai trò sẽ có thể có nhiều quyền hạn khác nhau, nhưng quyền hạn sẽ chỉ thuộc về một vai trò nhất định, do đó giữa ROLE và ROLE_PERMISSION có mối quan hệ 1:N.
-7. 
