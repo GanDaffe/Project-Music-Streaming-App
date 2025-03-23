@@ -1,27 +1,76 @@
+
 import { useState } from 'react';
 
-export const useResource = (initialData = []) => {
-    const [items, setItems] = useState(initialData); // Mock data
-    const [currentPage, setCurrentPage] = useState(1);
-    const [itemsPerPage] = useState(5); // Số mục trên 1 trang
+export const useResource = (resourceType, initialData = []) => {
+    const [resources, setResources] = useState(initialData);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
 
-    // Hàm thêm mục mới
-    const createItem = (newItem) => {
-        setItems([...items, newItem]);
+    const create = async (data) => {
+        try {
+            setIsLoading(true);
+            // Implement API call here
+            const newResource = { id: resources.length + 1, ...data };
+            setResources([...resources, newResource]);
+            return newResource;
+        } catch (err) {
+            setError(err.message);
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
     };
 
-    // Phân trang
-    const totalPages = Math.ceil(items.length / itemsPerPage);
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = items.slice(indexOfFirstItem, indexOfLastItem);
+    const read = async (id) => {
+        try {
+            setIsLoading(true);
+            // Implement API call here
+            return resources.find(resource => resource.id === id);
+        } catch (err) {
+            setError(err.message);
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const update = async (id, data) => {
+        try {
+            setIsLoading(true);
+            // Implement API call here
+            const updatedResources = resources.map(resource =>
+                resource.id === id ? { ...resource, ...data } : resource
+            );
+            setResources(updatedResources);
+            return updatedResources.find(resource => resource.id === id);
+        } catch (err) {
+            setError(err.message);
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const remove = async (id) => {
+        try {
+            setIsLoading(true);
+            // Implement API call here
+            setResources(resources.filter(resource => resource.id !== id));
+        } catch (err) {
+            setError(err.message);
+            throw err;
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     return {
-        items,
-        currentItems,
-        totalPages,
-        currentPage,
-        setCurrentPage,
-        createItem,
+        resources,
+        isLoading,
+        error,
+        create,
+        read,
+        update,
+        remove
     };
 };

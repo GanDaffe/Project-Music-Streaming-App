@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
 import * as THREE from 'three';
-import Logo from "../assets/icons/Logo.jsx";
+import Logo from "../../assets/icons/Logo.jsx";
 
 const Login = ({ onLogin }) => {
     const [showPassword, setShowPassword] = useState(false);

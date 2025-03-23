@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {BrowserRouter as Router, Navigate, Route, Routes} from "react-router-dom";
-import Sidebar from './components/Sidebar';
-import Empty from './components/Empty';
-import ParticleBackground from './components/ParticleBackground';
-import SongManager from "./pages/SongManager.jsx";
-import UserManager from "./pages/UserManager.jsx";
-import ArtistManager from "./pages/ArtistManager.jsx";
-import CommonManager from "./pages/CommonManager.jsx";
-import ViewManager from "./pages/CommonManager/ViewManager.jsx";
-import Login from "./pages/Login.jsx";
-import WelcomeScreen from "./pages/WelcomeScreen.jsx";
-import VerifyScreen from "./pages/VerifyScreen.jsx";
+import Sidebar from './components/Sidebar.jsx';
+import Empty from './components/common/Empty.jsx';
+import ParticleBackground from './components/common/ParticleBackground.jsx';
+import SongManager from "./pages/dashboard/SongManager.jsx";
+import UserManager from "./pages/dashboard/UserManager.jsx";
+import ArtistManager from "./pages/dashboard/ArtistManager.jsx";
+import CommonManager from "./pages/dashboard/CommonManager.jsx";
+import ViewManager from "./pages/dashboard/CommonManager/ViewManager.jsx";
+import Login from "./pages/auth/Login.jsx";
+import WelcomeScreen from "./pages/auth/WelcomeScreen.jsx";
+import VerifyScreen from "./pages/auth/VerifyScreen.jsx";
 
 const Home = () => {
     return (

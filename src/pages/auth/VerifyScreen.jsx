@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Thêm import này
-import Logo from '../assets/icons/Logo.jsx';
+import Logo from '../../assets/icons/Logo.jsx';
 
 const VerifyScreen = ({ onVerify }) => {
     const navigate = useNavigate(); // Khai báo biến navigate

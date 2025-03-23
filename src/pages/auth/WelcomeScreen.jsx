@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import * as THREE from 'three';
-import Logo from "../assets/icons/Logo.jsx";
+import Logo from "../../assets/icons/Logo.jsx";
 
 const WelcomeScreen = () => {
     const navigate = useNavigate();
