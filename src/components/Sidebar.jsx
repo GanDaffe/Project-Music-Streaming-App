@@ -120,65 +120,41 @@ const Sidebar = ({ isExpanded, toggleExpand, onLogout }) => {
                     {/* Quản lý chung */}
                     <div className="mt-4">
                         <div
-                            className={`flex items-center ${isExpanded ? 'justify-start px-4' : 'justify-center'} py-3 hover:bg-[#282828] rounded-lg transition duration-200 text-gray-400 hover:text-white cursor-pointer`}
-                            onClick={() => toggleGroup('common')}
+                            className={getLinkClassName('/dashboard/data-listening')}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                toggleGroup('listeningData');
+                            }}
                         >
-                            <Settings className="w-5 h-5" />
+                            <Database className="w-5 h-5" />
                             {isExpanded && (
-                                <>
-                                    <span className="ml-2">Quản lý chung</span>
-                                    <span
-                                        className={`ml-2 transition-transform duration-300 ease-in-out ${expandedGroups.common ? 'rotate-180' : 'rotate-0'}`}
-                                    >▼</span>
-                                </>
-                            )}
-                        </div>
-                        <div className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedGroups.common ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-                            {isExpanded && (
-                                <div className="pl-8">
-                                    <Link
-                                        to="/dashboard/common-manager/reports"
-                                        className={getLinkClassName('/dashboard/common-manager/reports')}
-                                    >
-                                        <FileText className="w-5 h-5" />
-                                        <span className="ml-2">Xuất báo cáo</span>
-                                    </Link>
-
-                                    <div
-                                        className="flex items-center py-2 px-4 text-gray-400 hover:text-white hover:bg-[#282828] rounded-lg transition duration-200 cursor-pointer"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            toggleGroup('listeningData');
-                                        }}
-                                    >
-                                        <Database className="w-5 h-5" />
-                                        <span className="ml-2">Dữ liệu lượt nghe</span>
-                                        <span
-                                            className={`ml-2 transition-transform duration-300 ease-in-out ${expandedGroups.listeningData ? 'rotate-180' : 'rotate-0'}`}
-                                        >▼</span>
-                                    </div>
-
-                                    <div className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedGroups.listeningData ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-                                        <div className="pl-8">
-                                            <Link
-                                                to="/dashboard/common-manager/statistics/time"
-                                                className={getLinkClassName('/dashboard/common-manager/statistics/time')}
-                                            >
-                                                <Clock className="w-5 h-5" />
-                                                <span className="ml-2">Theo thời gian</span>
-                                            </Link>
-                                            <Link
-                                                to="/dashboard/common-manager/statistics/genre"
-                                                className={getLinkClassName('/dashboard/common-manager/statistics/genre')}
-                                            >
-                                                <Tag className="w-5 h-5" />
-                                                <span className="ml-2">Theo thể loại</span>
-                                            </Link>
-                                        </div>
-                                    </div>
+                                <div className="ml-2 flex items-center justify-between flex-1">
+                                    <span>Dữ liệu lượt nghe</span>
+                                    <span className={`transition-transform duration-300 ${expandedGroups.listeningData ? 'rotate-180' : 'rotate-0'}`}>
+                                        ▼
+                                    </span>
                                 </div>
                             )}
                         </div>
+
+                        {isExpanded && (
+                            <div className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedGroups.listeningData ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
+                                <Link
+                                    to="/dashboard/data-listening/time"
+                                    className={`${getLinkClassName('/dashboard/data-listening/time')} pl-8`}
+                                >
+                                    <Clock className="w-5 h-5" />
+                                    <span className="ml-2">Theo thời gian</span>
+                                </Link>
+                                <Link
+                                    to="/dashboard/data-listening/genre"
+                                    className={`${getLinkClassName('/dashboard/data-listening/genre')} pl-8`}
+                                >
+                                    <Tag className="w-5 h-5" />
+                                    <span className="ml-2">Theo thể loại</span>
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </div>
 

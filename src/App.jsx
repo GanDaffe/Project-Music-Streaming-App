@@ -6,11 +6,11 @@ import ParticleBackground from './components/common/ParticleBackground.jsx';
 import SongManager from "./pages/dashboard/SongManager.jsx";
 import UserManager from "./pages/dashboard/UserManager.jsx";
 import ArtistManager from "./pages/dashboard/ArtistManager.jsx";
-import CommonManager from "./pages/dashboard/CommonManager.jsx";
-import ViewManager from "./pages/dashboard/CommonManager/ViewManager.jsx";
 import Login from "./pages/auth/Login.jsx";
 import WelcomeScreen from "./pages/auth/WelcomeScreen.jsx";
 import VerifyScreen from "./pages/auth/VerifyScreen.jsx";
+import DataListeningTime from "./pages/dashboard/DataListeningTime.jsx";
+import DataListeningGenre from "./pages/dashboard/DataListeningGenre.jsx";
 
 const Home = () => {
     return (
@@ -105,10 +105,8 @@ const App = () => {
                                                 <Route path="/song-manager" element={<SongManager/>}/>
                                                 <Route path="/user-manager" element={<UserManager/>}/>
                                                 <Route path="/artist-manager" element={<ArtistManager/>}/>
-                                                <Route path="/common-manager" element={<CommonManager/>}/>
-                                                <Route path="/common-manager/reports" element={<ViewManager/>}/>
-                                                <Route path="/common-manager/statistics/time" element={<ViewManager/>}/>
-                                                <Route path="/common-manager/statistics/genre" element={<ViewManager/>}/>
+                                                <Route path="/data-listening/time" element={<DataListeningTime/>}/>
+                                                <Route path="/data-listening/genre" element={<DataListeningGenre/>}/>
                                             </Routes>
                                         </div>
                                     </div>

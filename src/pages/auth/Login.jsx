@@ -158,7 +158,6 @@ const Login = ({ onLogin }) => {
             {/* Logo Element */}
             <div className="absolute top-8 left-8 z-10 flex items-center">
                 <Logo className="w-20 h-20 text-black"/>
-                <h3 className="text-white text-lg font-bold ml-2">SoundClone</h3>
             </div>
 
             {/* Back button */}
