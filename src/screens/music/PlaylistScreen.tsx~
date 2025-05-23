@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SearchNormal1, CloseCircle, Add, ArrowLeft } from 'iconsax-react-nativejs';
-import { useNavigation } from '@react-navigation/native';
 import usePlaylistStore from '../../stores/usePlaylistStore';
 
 const PlaylistScreen = () => {
@@ -21,7 +20,6 @@ const PlaylistScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [playlistName, setPlaylistName] = useState('');
-  const navigation = useNavigation();
 
   const { playlists, isLoading, fetchPlaylists, createPlaylist } = usePlaylistStore();
 
@@ -51,14 +49,6 @@ const PlaylistScreen = () => {
         // Lỗi đã được xử lý trong store, không cần làm gì thêm
       }
     }
-  };
-
-  const handlePlaylistPress = (playlist) => {
-    navigation.navigate('SongListScreen', {
-      playlistId: playlist.id,
-      playlistTitle: playlist.playlist_title,
-      coverImage: playlist.coverImage || 'https://picsum.photos/200/200'
-    });
   };
 
   // Lọc playlist theo searchQuery
@@ -108,11 +98,7 @@ const PlaylistScreen = () => {
             <Text style={styles.emptyState}>Đang tải...</Text>
           ) : filteredPlaylists.length > 0 ? (
             filteredPlaylists.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                style={styles.playlistItem}
-                onPress={() => handlePlaylistPress(item)}
-              >
+              <View key={item.id} style={styles.playlistItem}>
                 <Image
                   source={{ uri: item.coverImage || 'https://picsum.photos/200/200' }}
                   style={styles.playlistCover}
@@ -123,7 +109,7 @@ const PlaylistScreen = () => {
                     {item.songs?.length || 0} bài hát
                   </Text>
                 </View>
-              </TouchableOpacity>
+              </View>
             ))
           ) : (
             <Text style={styles.emptyState}>

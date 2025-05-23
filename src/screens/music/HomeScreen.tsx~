@@ -9,8 +9,6 @@ import {
   Animated,
   SafeAreaView,
   Alert,
-  StatusBar,
-  Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Sidebar from '../../components/Sidebar';
@@ -253,96 +251,89 @@ const HomeScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <StatusBar
-        backgroundColor="rgba(18, 18, 18, 1)"
-        barStyle="light-content"
-        translucent={true}
-      />
-      <SafeAreaView style={styles.safeAreaContainer}>
-        <View style={styles.mainContent}>
-          <View style={styles.header}>
-            <Text style={styles.greeting}>{greeting}</Text>
-            <TouchableOpacity onPress={toggleSidebar} style={styles.iconButton}>
-              <Image source={{ uri: userData.avatarUrl }} style={styles.avatarImage} />
-            </TouchableOpacity>
-          </View>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.mainContent}>
+        <View style={styles.header}>
+          <Text style={styles.greeting}>{greeting}</Text>
+          <TouchableOpacity onPress={toggleSidebar} style={styles.iconButton}>
+            <Image source={{ uri: userData.avatarUrl }} style={styles.avatarImage} />
+          </TouchableOpacity>
+        </View>
 
-          <ScrollView
-            style={styles.content}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollContent}
-          >
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Phát gần đây</Text>
-              {recentlyPlayed.length === 0 ? (
-                <Text style={styles.emptyText}>Không có bài hát nào được phát gần đây</Text>
-              ) : (
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
-                  {recentlyPlayed.map((item) => (
-                    <TouchableOpacity
-                      key={item.id}
-                      style={styles.musicCard}
-                      onPress={() => handleSongPress(item)}
-                    >
-                      <Image source={{ uri: item.albumCover }} style={styles.albumCover} />
-                      <Text style={styles.songTitle} numberOfLines={1}>{item.title}</Text>
-                      <Text style={styles.artistName} numberOfLines={1}>{item.artist}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              )}
-            </View>
-
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Có thể bạn sẽ thích</Text>
+        <ScrollView
+          style={styles.content}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Phát gần đây</Text>
+            {recentlyPlayed.length === 0 ? (
+              <Text style={styles.emptyText}>Không có bài hát nào được phát gần đây</Text>
+            ) : (
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
                 {recentlyPlayed.map((item) => (
                   <TouchableOpacity
                     key={item.id}
-                    style={styles.playlistCard}
-                    onPress={() => handlePlaylistPress(item)}
+                    style={styles.musicCard}
+                    onPress={() => handleSongPress(item)}
                   >
-                    <Image source={{ uri: item.albumCover }} style={styles.playlistCover} />
-                    <Text style={styles.playlistTitle} numberOfLines={2}>{item.title}</Text>
-                    <Text style={styles.playlistDescription} numberOfLines={2}>
-                      {item.description || 'No description'}
-                    </Text>
+                    <Image source={{ uri: item.albumCover }} style={styles.albumCover} />
+                    <Text style={styles.songTitle} numberOfLines={1}>{item.title}</Text>
+                    <Text style={styles.artistName} numberOfLines={1}>{item.artist}</Text>
                   </TouchableOpacity>
                 ))}
               </ScrollView>
-            </View>
+            )}
+          </View>
 
-            <View style={styles.section}>
-              <Text style={styles.sectionTitle}>SoundCLone lựa chọn cho bạn</Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
-                {featuredPlaylists.map((item) => (
-                  <TouchableOpacity
-                    key={item.id}
-                    style={styles.playlistCard}
-                    onPress={() => handlePlaylistPress(item)}
-                  >
-                    <Image source={{ uri: item.coverImage }} style={styles.playlistCover} />
-                    <Text style={styles.playlistTitle} numberOfLines={2}>{item.title}</Text>
-                    <Text style={styles.playlistDescription} numberOfLines={2}>{item.description}</Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-          </ScrollView>
-        </View>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Có thể bạn sẽ thích</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
+              {recentlyPlayed.map((item) => (
+                <TouchableOpacity
+                  key={item.id}
+                  style={styles.playlistCard}
+                  onPress={() => handlePlaylistPress(item)}
+                >
+                  <Image source={{ uri: item.albumCover }} style={styles.playlistCover} />
+                  <Text style={styles.playlistTitle} numberOfLines={2}>{item.title}</Text>
+                  <Text style={styles.playlistDescription} numberOfLines={2}>
+                    {item.description || 'No description'}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
 
-        {isSidebarVisible && <SidebarBackdrop />}
-        {isSidebarVisible && (
-          <Sidebar
-            isVisible={isSidebarVisible}
-            onClose={toggleSidebar}
-            userData={userData}
-            translateX={translateX}
-          />
-        )}
-      </SafeAreaView>
-    </View>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>SoundCLone lựa chọn cho bạn</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
+              {featuredPlaylists.map((item) => (
+                <TouchableOpacity
+                  key={item.id}
+                  style={styles.playlistCard}
+                  onPress={() => handlePlaylistPress(item)}
+                >
+                  <Image source={{ uri: item.coverImage }} style={styles.playlistCover} />
+                  <Text style={styles.playlistTitle} numberOfLines={2}>{item.title}</Text>
+                  <Text style={styles.playlistDescription} numberOfLines={2}>{item.description}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        </ScrollView>
+      </View>
+
+      {isSidebarVisible && <SidebarBackdrop />}
+      {isSidebarVisible && (
+        <Sidebar
+          isVisible={isSidebarVisible}
+          onClose={toggleSidebar}
+          userData={userData}
+          translateX={translateX}
+        />
+      )}
+    </SafeAreaView>
   );
 };
 
@@ -350,10 +341,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#121212',
-  },
-  safeAreaContainer: {
-    flex: 1,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   mainContent: {
     flex: 1,

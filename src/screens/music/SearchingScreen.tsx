@@ -9,6 +9,9 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
+  StatusBar,
+  Platform,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -206,108 +209,115 @@ const SearchingScreen = () => {
   );
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.searchBar}>
-          <SearchNormal1 color="#b3b3b3" size={20} />
-          <TextInput
-            style={styles.input}
-            placeholder="Tìm kiếm bài hát, nghệ sĩ, hoặc playlist"
-            placeholderTextColor="#b3b3b3"
-            value={searchQuery}
-            onChangeText={fetchSuggestions}
-            onSubmitEditing={() => handleSearch(searchQuery)}
-            returnKeyType="search"
-            autoFocus
-          />
-          {searchQuery ? (
-            <TouchableOpacity onPress={() => {
-              setSearchQuery('');
-              setSearchResults(null);
-              setSuggestions([]);
-            }}>
-              <CloseCircle color="#b3b3b3" size={20} />
-            </TouchableOpacity>
-          ) : null}
-        </View>
-
-        {searchQuery && suggestions.length > 0 && (
-          <View style={styles.suggestionsContainer}>
-            <FlatList
-              data={suggestions}
-              renderItem={renderSuggestionItem}
-              keyExtractor={(item, index) => index.toString()}
-              keyboardShouldPersistTaps="handled"
+    <View style={styles.container}>
+      <StatusBar
+        backgroundColor="rgba(18, 18, 18, 1)"
+        barStyle="light-content"
+        translucent={true}
+      />
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <SafeAreaView style={styles.safeAreaContainer}>
+          <View style={styles.searchBar}>
+            <SearchNormal1 color="#b3b3b3" size={20} />
+            <TextInput
+              style={styles.input}
+              placeholder="Tìm kiếm bài hát, nghệ sĩ, hoặc playlist"
+              placeholderTextColor="#b3b3b3"
+              value={searchQuery}
+              onChangeText={fetchSuggestions}
+              onSubmitEditing={() => handleSearch(searchQuery)}
+              returnKeyType="search"
+              autoFocus
             />
-          </View>
-        )}
-
-        {!searchQuery && searchHistory.length > 0 && (
-          <View style={styles.historyContainer}>
-            <View style={styles.historyHeader}>
-              <Text style={styles.sectionTitle}>Gần đây</Text>
-              <TouchableOpacity onPress={clearSearchHistory}>
-                <Text style={styles.clearText}>Xóa tất cả</Text>
+            {searchQuery ? (
+              <TouchableOpacity onPress={() => {
+                setSearchQuery('');
+                setSearchResults(null);
+                setSuggestions([]);
+              }}>
+                <CloseCircle color="#b3b3b3" size={20} />
               </TouchableOpacity>
-            </View>
-            <FlatList
-              data={searchHistory}
-              renderItem={renderHistoryItem}
-              keyExtractor={(item, index) => index.toString()}
-              horizontal={false}
-              showsVerticalScrollIndicator={false}
-            />
+            ) : null}
           </View>
-        )}
 
-        {loading && <Text style={styles.loading}>Đang tải...</Text>}
-        {searchResults && (
-          <View style={styles.resultsContainer}>
-            {searchResults.songs.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Bài hát</Text>
-                <FlatList
-                  data={searchResults.songs}
-                  renderItem={renderSongItem}
-                  keyExtractor={(item) => item.song_id}
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                />
+          {searchQuery && suggestions.length > 0 && (
+            <View style={styles.suggestionsContainer}>
+              <FlatList
+                data={suggestions}
+                renderItem={renderSuggestionItem}
+                keyExtractor={(item, index) => index.toString()}
+                keyboardShouldPersistTaps="handled"
+              />
+            </View>
+          )}
+
+          {!searchQuery && searchHistory.length > 0 && (
+            <View style={styles.historyContainer}>
+              <View style={styles.historyHeader}>
+                <Text style={styles.sectionTitle}>Gần đây</Text>
+                <TouchableOpacity onPress={clearSearchHistory}>
+                  <Text style={styles.clearText}>Xóa tất cả</Text>
+                </TouchableOpacity>
               </View>
-            )}
-            {searchResults.artists.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Nghệ sĩ</Text>
-                <FlatList
-                  data={searchResults.artists}
-                  renderItem={renderArtistItem}
-                  keyExtractor={(item) => item.artist_id}
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                />
-              </View>
-            )}
-            {searchResults.playlists.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Playlist</Text>
-                <FlatList
-                  data={searchResults.playlists}
-                  renderItem={renderPlaylistItem}
-                  keyExtractor={(item) => item.playlist_id}
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                />
-              </View>
-            )}
-          </View>
-        )}
-        {!searchQuery && !searchResults && !loading && (
-          <Text style={styles.placeholder}>
-            Tìm kiếm bài hát, nghệ sĩ hoặc playlist yêu thích của bạn
-          </Text>
-        )}
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+              <FlatList
+                data={searchHistory}
+                renderItem={renderHistoryItem}
+                keyExtractor={(item, index) => index.toString()}
+                horizontal={false}
+                showsVerticalScrollIndicator={false}
+              />
+            </View>
+          )}
+
+          {loading && <Text style={styles.loading}>Đang tải...</Text>}
+          {searchResults && (
+            <View style={styles.resultsContainer}>
+              {searchResults.songs.length > 0 && (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Bài hát</Text>
+                  <FlatList
+                    data={searchResults.songs}
+                    renderItem={renderSongItem}
+                    keyExtractor={(item) => item.song_id}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                  />
+                </View>
+              )}
+              {searchResults.artists.length > 0 && (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Nghệ sĩ</Text>
+                  <FlatList
+                    data={searchResults.artists}
+                    renderItem={renderArtistItem}
+                    keyExtractor={(item) => item.artist_id}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                  />
+                </View>
+              )}
+              {searchResults.playlists.length > 0 && (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Playlist</Text>
+                  <FlatList
+                    data={searchResults.playlists}
+                    renderItem={renderPlaylistItem}
+                    keyExtractor={(item) => item.playlist_id}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                  />
+                </View>
+              )}
+            </View>
+          )}
+          {!searchQuery && !searchResults && !loading && (
+            <Text style={styles.placeholder}>
+              Tìm kiếm bài hát, nghệ sĩ hoặc playlist yêu thích của bạn
+            </Text>
+          )}
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
+    </View>
   );
 };
 
@@ -315,7 +325,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#121212',
-    paddingTop: 10,
+  },
+  safeAreaContainer: {
+    flex: 1,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 10,
   },
   searchBar: {
     flexDirection: 'row',
@@ -325,6 +338,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginHorizontal: 16,
     height: 40,
+    marginTop: 10,
   },
   input: {
     flex: 1,
