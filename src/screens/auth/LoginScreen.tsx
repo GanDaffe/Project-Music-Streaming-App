@@ -13,7 +13,8 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import apiInstance from '../../service/apiInstance';
 import WibuLogin from '../../assets/images/wibu/WibuLogin';
 import GoogleIcon from '../../assets/icons/GoogleIcon';
-import {Eye, EyeSlash, Lock, Sms} from 'iconsax-react-nativejs';
+import {ArrowLeft, Eye, EyeSlash, Lock, Sms} from 'iconsax-react-nativejs';
+import {useAuth} from '../../context/AuthContext';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -21,6 +22,7 @@ const LoginScreen = () => {
   const [formData, setFormData] = useState({email: '', password: ''});
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const {login, isAuthenticated} = useAuth();
 
   const handleChange = (field, value) => {
     setFormData({...formData, [field]: value});
@@ -34,34 +36,22 @@ const LoginScreen = () => {
     }
     setLoading(true);
     try {
-      // Gửi yêu cầu đăng nhập đến endpoint /login
-      const response = await apiInstance.post(
-        '/login',
-        {
-          user_email: formData.email,
-          user_password: formData.password,
-        },
-        {skipAuth: true},
-      );
-
-      if (!response.success) {
-        throw new Error(response.errorMessage || 'Đăng nhập thất bại');
-      }
-
-      await EncryptedStorage.setItem('token', response.token);
-      await EncryptedStorage.setItem('refreshToken', response.refreshToken);
-
-      // Điều hướng đến màn hình Home
-      navigation.reset({
-        index: 0,
-        routes: [{name: 'MainApp'}],
-      });
+      await login(formData.email, formData.password);
     } catch (err) {
       setError(err.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'MainApp'}],
+      });
+    }
+  }, [isAuthenticated]);
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
@@ -106,16 +96,17 @@ const LoginScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.header}>
-        {/*<TouchableOpacity*/}
-        {/*  onPress={() => navigation.goBack()}*/}
-        {/*  style={styles.backButton}>*/}
-        {/*  <ArrowLeft color="#ffffff" />*/}
-        {/*</TouchableOpacity>*/}
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
+          <ArrowLeft color="#ffffff" />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Đăng nhập</Text>
+        <View style={styles.headerRight} />
       </View>
       <View style={styles.container}>
         <View style={styles.logoContainer}>
-          <WibuLogin width={170} height={170} />
+          <WibuLogin width={150} height={150} />
         </View>
         <View style={styles.content}>
           <View style={styles.textContainer}>
@@ -203,16 +194,22 @@ const styles = StyleSheet.create({
   safeArea: {flex: 1, backgroundColor: '#000'},
   header: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
   },
-  backButton: {marginRight: 16},
+  backButton: {
+    width: 40,
+  },
   backIcon: {color: '#fff', fontSize: 24},
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#fff',
+    textAlign: 'center',
+  },
+  headerRight: {
+    width: 40, // Thêm phần tử trống bên phải để cân bằng với nút back
   },
   container: {flex: 1, padding: 24},
   logoContainer: {alignItems: 'center', marginBottom: 24},

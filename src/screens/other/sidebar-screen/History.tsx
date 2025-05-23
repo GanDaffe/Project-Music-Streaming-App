@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { format } from 'date-fns';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { ArrowLeft, More } from 'iconsax-react-nativejs';
 
 // Mock data cho lịch sử nghe nhạc, xoá đi sau khi kết nối api
 const MOCK_HISTORY_DATA = [
@@ -111,7 +111,7 @@ const History = () => {
         // TODO: Kết nối với API thực tế
         try {
           const token = await AuthService.getToken();
-          const response = await axios.get('http://your-api-url/api/listening-history', {
+          const response = await axios.get('', {
             headers: {
               Authorization: `Bearer ${token}`
             }
@@ -175,7 +175,7 @@ const History = () => {
             </View>
             <Text style={styles.songTime}>{format(item.playedAt, 'HH:mm')}</Text>
             <TouchableOpacity style={styles.moreButton}>
-                <Icon name="ellipsis-vertical" size={20} color="#999" />
+                <More size={20} color="#999" variant="Linear" />
             </TouchableOpacity>
         </TouchableOpacity>
     );
@@ -200,7 +200,7 @@ const History = () => {
                     style={styles.backButton}
                     onPress={() => navigation.goBack()}
                 >
-                    <Icon name="arrow-back" size={24} color="#fff" />
+                    <ArrowLeft size={24} color="#fff" />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Lịch sử nghe nhạc</Text>
                 <View style={styles.headerRight} />

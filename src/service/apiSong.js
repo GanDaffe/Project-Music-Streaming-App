@@ -5,37 +5,38 @@ import AuthService from './auth';
 export const getSongs = async () => {
   try {
     const token = await AuthService.getToken();
-    const response = await apiInstance.get('/songs', { token });
-    return response;
-  } catch (error) {
-    console.error('Lỗi khi gọi API getSongs:', error);
-    throw error;
-  }
-};
-
-// API lấy danh sách bài hát đã thích
-export const getLikedSongs = async () => {
-  try {
-    const token = await AuthService.getToken(); // Sử dụng AuthService để lấy token
-    const response = await apiInstance.get('/songs/liked', {
-      token, // Truyền token vào config
+    const response = await apiInstance.get('/songs', {
+      token,
       onTokenExpired: async () => {
         try {
-          const newToken = await AuthService.refreshToken(); // Gọi refresh token từ AuthService
+          const newToken = await AuthService.refreshToken();
           if (!newToken) {
             throw new Error('Không thể refresh token');
           }
           return newToken;
         } catch (error) {
           console.error('Không thể refresh token, đăng xuất...');
-          await AuthService.logout(); // Đăng xuất nếu không refresh được
+          await AuthService.logout();
           return null;
         }
       },
     });
-    return response;
+
+    // Kiểm tra dữ liệu trả về
+    if (!response || !Array.isArray(response)) {
+      console.error('Dữ liệu bài hát không hợp lệ:', response);
+      return [];
+    }
+
+    // Đảm bảo mỗi bài hát có trường liked
+    const songsWithLiked = response.map(song => ({
+      ...song,
+      liked: song.liked !== undefined ? song.liked : false, // Đảm bảo liked luôn có giá trị
+    }));
+
+    return songsWithLiked;
   } catch (error) {
-    console.error('Lỗi khi gọi API getLikedSongs:', error);
+    console.error('Lỗi khi gọi API getSongs:', error);
     throw error;
   }
 };

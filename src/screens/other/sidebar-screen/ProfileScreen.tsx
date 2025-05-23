@@ -1,27 +1,22 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-    Image,
-    Keyboard,
-    KeyboardAvoidingView,
-    Modal,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
     View,
+    Text,
+    StyleSheet,
+    Image,
+    ScrollView,
+    TouchableOpacity,
+    ActivityIndicator,
+    Modal,
+    TextInput,
+    KeyboardAvoidingView,
+    Platform,
+    TouchableWithoutFeedback,
+    Keyboard,
 } from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {
-    ArrowDown2,
-    ArrowLeft,
-    Calendar,
-    Camera,
-    Star,
-} from 'iconsax-react-nativejs';
-import {useNavigation} from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import {ArrowDown2, ArrowLeft, Calendar, Camera, Star} from "iconsax-react-nativejs";
+import { useNavigation } from '@react-navigation/native';
 
 // Types
 interface UserProfile {
@@ -47,7 +42,7 @@ const mockUserProfile: UserProfile = {
     createdAt: '2022-05-15',
 };
 
-const ProfileUser = () => {
+const ProfileScreen = () => {
     const navigation = useNavigation();
     const [userProfile, setUserProfile] = useState<UserProfile>(mockUserProfile); // Khởi tạo trực tiếp với mockData
     const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -79,38 +74,40 @@ const ProfileUser = () => {
             animationType="slide"
             transparent={true}
             visible={isEditModalVisible}
-            onRequestClose={() => setIsEditModalVisible(false)}>
+            onRequestClose={() => setIsEditModalVisible(false)}
+        >
             <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={styles.modalContainer}>
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={styles.modalContainer}
+            >
                 <View style={styles.modalContent}>
                     <View style={styles.modalHeader}>
                         <TouchableOpacity
                             onPress={() => setIsEditModalVisible(false)}
-                            style={styles.closeButton}>
+                            style={styles.closeButton}
+                        >
                             <ArrowDown2 color="#ffffff"/>
                         </TouchableOpacity>
                         <Text style={styles.modalTitle}>Chỉnh sửa hồ sơ</Text>
-                        <View style={styles.headerRight}/>
+                        <View style={styles.headerRight} />
                     </View>
 
                     <ScrollView
                         style={styles.modalForm}
                         showsVerticalScrollIndicator={false}
                         keyboardShouldPersistTaps="handled"
-                        bounces={false}>
+                        bounces={false}
+                    >
                         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                             <View>
                                 <View style={styles.profileImageContainer}>
                                     <Image
-                                        source={{uri: userProfile?.imageUri}}
+                                        source={{ uri: userProfile?.imageUri }}
                                         style={styles.modalProfileImage}
                                     />
                                     <TouchableOpacity style={styles.changePhotoButton}>
-                                        <Camera size={22} color="#1DB954"/>
-                                        <Text style={styles.changePhotoText}>
-                                            Thay đổi ảnh đại diện
-                                        </Text>
+                                        <Camera size={22} color="#1DB954" />
+                                        <Text style={styles.changePhotoText}>Thay đổi ảnh đại diện</Text>
                                     </TouchableOpacity>
                                 </View>
 
@@ -120,10 +117,8 @@ const ProfileUser = () => {
                                         <TextInput
                                             style={styles.input}
                                             value={editedProfile?.username}
-                                            onChangeText={text =>
-                                                setEditedProfile(prev =>
-                                                    prev ? {...prev, username: text} : null,
-                                                )
+                                            onChangeText={(text) =>
+                                                setEditedProfile(prev => prev ? {...prev, username: text} : null)
                                             }
                                             placeholderTextColor="#666"
                                         />
@@ -134,10 +129,8 @@ const ProfileUser = () => {
                                         <TextInput
                                             style={styles.input}
                                             value={editedProfile?.fullName}
-                                            onChangeText={text =>
-                                                setEditedProfile(prev =>
-                                                    prev ? {...prev, fullName: text} : null,
-                                                )
+                                            onChangeText={(text) =>
+                                                setEditedProfile(prev => prev ? {...prev, fullName: text} : null)
                                             }
                                             placeholderTextColor="#666"
                                         />
@@ -148,10 +141,8 @@ const ProfileUser = () => {
                                         <TextInput
                                             style={styles.input}
                                             value={editedProfile?.email}
-                                            onChangeText={text =>
-                                                setEditedProfile(prev =>
-                                                    prev ? {...prev, email: text} : null,
-                                                )
+                                            onChangeText={(text) =>
+                                                setEditedProfile(prev => prev ? {...prev, email: text} : null)
                                             }
                                             keyboardType="email-address"
                                             placeholderTextColor="#666"
@@ -162,7 +153,8 @@ const ProfileUser = () => {
 
                                 <TouchableOpacity
                                     style={styles.saveButton}
-                                    onPress={handleSaveProfile}>
+                                    onPress={handleSaveProfile}
+                                >
                                     <Text style={styles.saveButtonText}>Lưu thay đổi</Text>
                                 </TouchableOpacity>
                             </View>
@@ -178,25 +170,23 @@ const ProfileUser = () => {
             <ScrollView showsVerticalScrollIndicator={false}>
                 {/* Header */}
                 <View style={styles.header}>
-                    <TouchableOpacity
-                        style={styles.backButton}
-                        onPress={() => navigation.goBack()}>
-                        <ArrowLeft size={24} color="#fff"/>
+                    <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+                        <ArrowLeft size={24} color="#fff" />
                     </TouchableOpacity>
                     <Text style={styles.headerTitle}>Hồ sơ</Text>
-                    <View style={styles.headerRight}/>
+                    <View style={styles.headerRight} />
                 </View>
 
                 {/* User info section */}
                 <View style={styles.userInfoContainer}>
                     <View style={styles.profileImageWrapper}>
                         <Image
-                            source={{uri: userProfile?.imageUri}}
+                            source={{ uri: userProfile?.imageUri }}
                             style={styles.profileImage}
                         />
                         {userProfile?.premiumStatus && (
                             <View style={styles.premiumBadge}>
-                                <Star size={12} color="#fff"/>
+                                <Star size={12} color="#fff" />
                             </View>
                         )}
                     </View>
@@ -213,7 +203,7 @@ const ProfileUser = () => {
                     </View>
 
                     <View style={styles.memberSinceContainer}>
-                        <Calendar size={16} color="#666"/>
+                        <Calendar size={16} color="#666" />
                         <Text style={styles.memberSinceText}>
                             Thành viên từ {formatDate(userProfile?.createdAt || '')}
                         </Text>
@@ -221,12 +211,13 @@ const ProfileUser = () => {
 
                     <TouchableOpacity
                         style={styles.editButton}
-                        onPress={handleEditProfile}>
+                        onPress={handleEditProfile}
+                    >
                         <Text style={styles.editButtonText}>Chỉnh sửa hồ sơ</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
-            <EditProfileModal/>
+            <EditProfileModal />
         </SafeAreaView>
     );
 };
@@ -391,7 +382,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#2a2a2a',
     },
     closeButton: {
-        width: 40, // Đặt kích thước cố định
+        width: 40,  // Đặt kích thước cố định
         height: 40,
         alignItems: 'center',
         justifyContent: 'center',
@@ -403,7 +394,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     headerRight: {
-        width: 40, // Để cân đối với closeButton
+        width: 40,  // Để cân đối với closeButton
     },
     modalForm: {
         flex: 1,
@@ -480,4 +471,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ProfileUser;
+export default ProfileScreen;

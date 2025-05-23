@@ -11,7 +11,14 @@ import {useNavigation} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WibuRegister from '../../assets/images/wibu/WibuRegister';
 import GoogleIcon from '../../assets/icons/GoogleIcon';
-import {ArrowLeft} from "iconsax-react-nativejs";
+import {
+  ArrowLeft,
+  User,
+  Sms,
+  Lock,
+  Eye,
+  EyeSlash
+} from "iconsax-react-nativejs";
 
 
 const RegisterScreen = () => {
@@ -87,7 +94,7 @@ const RegisterScreen = () => {
   }) => (
     <View style={styles.inputContainer}>
       <View style={styles.inputWrapper}>
-        <Text style={styles.inputIcon}>{icon}</Text>
+        {icon}
         <TextInput
           style={styles.input}
           placeholder={placeholder}
@@ -100,7 +107,11 @@ const RegisterScreen = () => {
         />
         {secure && (
           <TouchableOpacity style={styles.eyeIcon} onPress={toggleSecure}>
-            <Text>{showSecure ? '👁️' : '👁️‍🗨️'}</Text>
+            {showSecure ? (
+              <Eye size={24} color="#fff" variant="Linear" />
+            ) : (
+              <EyeSlash size={24} color="#fff" variant="Linear" />
+            )}
           </TouchableOpacity>
         )}
       </View>
@@ -130,17 +141,17 @@ const RegisterScreen = () => {
           </View>
           <View style={styles.formContainer}>
             {renderInput({
-              icon: '👤',
+              icon: <User color="#ffffff" size={22} variant="Bold" />,
               placeholder: 'Nhập họ và tên',
               field: 'username',
             })}
             {renderInput({
-              icon: '📧',
+              icon: <Sms color="#ffffff" size={22} variant="Bold" />,
               placeholder: 'Nhập email của bạn',
               field: 'email',
             })}
             {renderInput({
-              icon: '🔒',
+              icon: <Lock color="#ffffff" size={22} variant="Bold" />,
               placeholder: 'Nhập mật khẩu',
               field: 'password',
               secure: true,
@@ -148,7 +159,7 @@ const RegisterScreen = () => {
               toggleSecure: () => setShowPassword(!showPassword),
             })}
             {renderInput({
-              icon: '🔒',
+              icon: <Lock color="#ffffff" size={22} variant="Bold" />,
               placeholder: 'Nhập lại mật khẩu',
               field: 'passwordConfirm',
               secure: true,
@@ -178,7 +189,7 @@ const RegisterScreen = () => {
             </TouchableOpacity>
             <View style={styles.registerContainer}>
               <Text style={styles.registerText}>Bạn đã có tài khoản? </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <TouchableOpacity onPress={() => navigation.navigate('LoginScreen')}>
                 <Text style={styles.registerLink}>Đăng nhập ngay</Text>
               </TouchableOpacity>
             </View>
