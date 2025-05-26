@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -14,7 +14,7 @@ import { ArrowDown2, More, Previous, Pause, Play, Next, Shuffle, Repeat, Repeate
 import { usePlayerStore } from '../../stores/usePlayerStore';
 import { useAuth } from '../../context/AuthContext';
 import LikeButton from '../../components/LikeButton';
-
+import MoreOptionsModal from '../../components/MoreOptionsModal';
 
 const NowPlayingScreen = () => {
   const navigation = useNavigation();
@@ -22,6 +22,7 @@ const NowPlayingScreen = () => {
   const { songs: initialSongs, initialTrackIndex } = route.params;
   const { position, duration } = useProgress(500);
   const { currentTrackData, isPlaying, isShuffling, repeatMode, togglePlay, toggleShuffle, toggleRepeat, skipToNext, skipToPrevious, seekTo} = usePlayerStore();
+  const [moreOptionsVisible, setMoreOptionsVisible] = useState(false);
 
   useEffect(() => {
     const initQueue = async () => {
@@ -92,6 +93,14 @@ const NowPlayingScreen = () => {
     );
   }
 
+  const handleMorePress = () => {
+    setMoreOptionsVisible(true);
+  };
+
+  const handleCloseMoreOptions = () => {
+    setMoreOptionsVisible(false);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -99,7 +108,7 @@ const NowPlayingScreen = () => {
           <ArrowDown2 color="#ffffff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>ĐANG PHÁT</Text>
-        <TouchableOpacity style={styles.headerButton} onPress={() => console.log('More button pressed')}>
+        <TouchableOpacity style={styles.headerButton} onPress={handleMorePress}>
           <More color="#ffffff" />
         </TouchableOpacity>
       </View>
@@ -163,6 +172,11 @@ const NowPlayingScreen = () => {
           )}
         </TouchableOpacity>
       </View>
+      <MoreOptionsModal
+        visible={moreOptionsVisible}
+        onClose={handleCloseMoreOptions}
+        song={currentTrackData}
+      />
     </SafeAreaView>
   );
 };

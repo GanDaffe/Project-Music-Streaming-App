@@ -182,6 +182,33 @@ const PlaylistService = {
             throw error;
         }
     },
+
+    // Xóa bài hát khỏi playlist
+    async removeSongFromPlaylist(playlistId, songId) {
+        try {
+            const token = await AuthService.getToken();
+            if (!token) {
+                throw new Error('Không có token để thực hiện yêu cầu');
+            }
+
+            const response = await apiInstance.delete(
+                `/playlists/${playlistId}/songs/${songId}`,
+                {
+                    token,
+                    onTokenExpired: handleTokenExpired,
+                }
+            );
+
+            if (!response.success) {
+                throw new Error(response.error || 'Xóa bài hát khỏi playlist thất bại');
+            }
+
+            return response.playlist;
+        } catch (error) {
+            console.error('Lỗi khi xóa bài hát khỏi playlist:', error.message);
+            throw error;
+        }
+    },
 };
 
 export default PlaylistService;

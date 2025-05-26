@@ -1,6 +1,7 @@
 import {create} from 'zustand';
 import TrackPlayer, {RepeatMode, State} from 'react-native-track-player';
 import {toggleLike} from '../service/apiLikeSong';
+import PlaylistService from '../service/apiPlaylist';
 
 type Song = {
   id: string;
@@ -23,6 +24,7 @@ type PlayerState = {
   isShuffling: boolean;
   repeatMode: RepeatMode;
   isLiked: boolean;
+  favoriteSongs: Song[];
   setRecentlyPlayed: (songs: Song[]) => void;
   setCurrentTrack: (id: string | null, data: Song | null) => void;
   setSidebarVisible: (visible: boolean) => void;
@@ -36,6 +38,9 @@ type PlayerState = {
   skipToPrevious: () => Promise<void>;
   seekTo: (position: number) => Promise<void>;
   loadSongs: () => Promise<void>;
+  addToFavorites: (song: Song) => Promise<void>;
+  removeFromFavorites: (songId: string) => void;
+  addSongToPlaylist: (songId: string, playlistId: string) => Promise<boolean>;
 };
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
@@ -47,6 +52,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   isLiked: false,
   isShuffling: false,
   repeatMode: RepeatMode.Off,
+  favoriteSongs: [],
   setRecentlyPlayed: songs => set({recentlyPlayed: songs}),
   setIsLiked: liked => set({isLiked: liked}),
   setCurrentTrack: (id, data) =>
@@ -73,19 +79,28 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     }
   },
   toggleLike: async () => {
-    const {currentTrackData, setIsLiked} = get();
+    const { currentTrackData, setIsLiked, addToFavorites, removeFromFavorites } = get();
     if (!currentTrackData?.id) return;
 
     try {
       const response = await toggleLike(currentTrackData.id);
       if (response.success) {
         setIsLiked(response.liked);
-        set({
-          currentTrackData: {
-            ...currentTrackData,
-            liked: response.liked,
-          },
-        });
+
+        // Update currentTrackData
+        const updatedTrack = {
+          ...currentTrackData,
+          liked: response.liked,
+        };
+
+        set({ currentTrackData: updatedTrack });
+
+        // Update favorites
+        if (response.liked) {
+          addToFavorites(updatedTrack);
+        } else {
+          removeFromFavorites(updatedTrack.id);
+        }
       }
     } catch (error) {
       console.error('Lỗi khi gọi toggleLike:', error);
@@ -148,5 +163,24 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   },
   loadSongs: async () => {
     // Implement if needed
+  },
+  addToFavorites: async (song) => {
+    const { favoriteSongs } = get();
+    if (!favoriteSongs.some(s => s.id === song.id)) {
+      set({ favoriteSongs: [...favoriteSongs, song] });
+    }
+  },
+  removeFromFavorites: (songId) => {
+    const { favoriteSongs } = get();
+    set({ favoriteSongs: favoriteSongs.filter(song => song.id !== songId) });
+  },
+  addSongToPlaylist: async (songId, playlistId) => {
+    try {
+      const response = await PlaylistService.addSongToPlaylist(playlistId, songId);
+      return response.success;
+    } catch (error) {
+      console.error('Error adding song to playlist:', error);
+      return false;
+    }
   },
 }));

@@ -18,18 +18,23 @@ import TrackPlayer from 'react-native-track-player';
 import usePlaylistStore from '../../stores/usePlaylistStore';
 import { usePlayerStore } from '../../stores/usePlayerStore';
 import { getFullMinioUrl } from '../../service/minioUrl';
+import MoreOptionsModal from '../../components/MoreOptionsModal';
 
 const SongListScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { playlistId, playlistTitle, coverImage } = route.params;
-  
+
   const [playlist, setPlaylist] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const { getPlaylistDetails, playPlaylist } = usePlaylistStore();
   const { currentTrack, isPlaying, setCurrentTrack, togglePlay } = usePlayerStore();
+
+  // Add state for modal
+  const [selectedSong, setSelectedSong] = useState(null);
+  const [moreOptionsVisible, setMoreOptionsVisible] = useState(false);
 
   useEffect(() => {
     const fetchPlaylistDetails = async () => {
@@ -97,9 +102,20 @@ const SongListScreen = () => {
     }
   };
 
+  // Add handler for more button
+  const handleMorePress = (song) => {
+    setSelectedSong(song);
+    setMoreOptionsVisible(true);
+  };
+
+  const handleCloseMoreOptions = () => {
+    setMoreOptionsVisible(false);
+    setSelectedSong(null);
+  };
+
   const renderSongItem = ({ item, index }) => {
     const isCurrentSong = currentTrack && currentTrack.id === item.id;
-    
+
     return (
       <TouchableOpacity
         style={[
@@ -109,9 +125,9 @@ const SongListScreen = () => {
         onPress={() => handleSongPress(item)}
       >
         <Text style={styles.songIndex}>{index + 1}</Text>
-        <Image 
-          source={{ uri: item.artwork || 'https://picsum.photos/100/100' }} 
-          style={styles.songCover} 
+        <Image
+          source={{ uri: item.artwork || 'https://picsum.photos/100/100' }}
+          style={styles.songCover}
         />
         <View style={styles.songInfo}>
           <Text style={[styles.songTitle, isCurrentSong && styles.currentSongText]}>
@@ -119,7 +135,10 @@ const SongListScreen = () => {
           </Text>
           <Text style={styles.songArtist}>{item.artist}</Text>
         </View>
-        <TouchableOpacity style={styles.moreButton}>
+        <TouchableOpacity
+          style={styles.moreButton}
+          onPress={() => handleMorePress(item)}
+        >
           <MoreCircle size={24} color="#ffffff" />
         </TouchableOpacity>
       </TouchableOpacity>
@@ -140,7 +159,7 @@ const SongListScreen = () => {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>{playlistTitle}</Text>
         </View>
-        
+
         {isLoading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#1DB954" />
@@ -149,7 +168,7 @@ const SongListScreen = () => {
         ) : error ? (
           <View style={styles.errorContainer}>
             <Text style={styles.errorText}>{error}</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.retryButton}
               onPress={() => {
                 setIsLoading(true);
@@ -166,16 +185,16 @@ const SongListScreen = () => {
         ) : (
           <>
             <View style={styles.playlistHeader}>
-              <Image 
-                source={{ uri: coverImage }} 
-                style={styles.playlistCover} 
+              <Image
+                source={{ uri: coverImage }}
+                style={styles.playlistCover}
               />
               <View style={styles.playlistInfo}>
                 <Text style={styles.playlistTitle}>{playlistTitle}</Text>
                 <Text style={styles.playlistDetails}>
                   {playlist?.songs?.length || 0} bài hát
                 </Text>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.playAllButton}
                   onPress={handlePlayAll}
                 >
@@ -184,7 +203,7 @@ const SongListScreen = () => {
                 </TouchableOpacity>
               </View>
             </View>
-            
+
             {playlist?.songs?.length > 0 ? (
               <FlatList
                 data={playlist.songs}
@@ -202,6 +221,11 @@ const SongListScreen = () => {
           </>
         )}
       </SafeAreaView>
+      <MoreOptionsModal
+        visible={moreOptionsVisible}
+        onClose={handleCloseMoreOptions}
+        song={selectedSong}
+      />
     </View>
   );
 };

@@ -15,6 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { SearchNormal1, CloseCircle, Add, ArrowLeft } from 'iconsax-react-nativejs';
 import { useNavigation } from '@react-navigation/native';
 import usePlaylistStore from '../../stores/usePlaylistStore';
+import { usePlayerStore } from '../../stores/usePlayerStore';
 
 const PlaylistScreen = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
@@ -24,6 +25,7 @@ const PlaylistScreen = () => {
   const navigation = useNavigation();
 
   const { playlists, isLoading, fetchPlaylists, createPlaylist } = usePlaylistStore();
+  const { favoriteSongs } = usePlayerStore();
 
   // Lấy danh sách playlist khi màn hình được tải
   useEffect(() => {
@@ -54,17 +56,39 @@ const PlaylistScreen = () => {
   };
 
   const handlePlaylistPress = (playlist) => {
-    navigation.navigate('SongListScreen', {
-      playlistId: playlist.id,
-      playlistTitle: playlist.playlist_title,
-      coverImage: playlist.coverImage || 'https://picsum.photos/200/200'
-    });
+    if (playlist.id === 'favorites') {
+      // Navigate to SongListScreen with favorites
+      navigation.navigate('SongListScreen', {
+        playlistId: 'favorites',
+        playlistTitle: 'Bài hát yêu thích',
+        coverImage: playlist.coverImage,
+        songs: favoriteSongs
+      });
+    } else {
+      // Original navigation for regular playlists
+      navigation.navigate('SongListScreen', {
+        playlistId: playlist.id,
+        playlistTitle: playlist.playlist_title,
+        coverImage: playlist.coverImage || 'https://picsum.photos/200/200'
+      });
+    }
+  };
+
+  // Create a favorites playlist object
+  const favoritesPlaylist = {
+    id: 'favorites',
+    playlist_title: 'Bài hát yêu thích',
+    coverImage: 'https://picsum.photos/200/200?random=favorites',
+    songs: favoriteSongs
   };
 
   // Lọc playlist theo searchQuery
-  const filteredPlaylists = playlists.filter((item) =>
-    item.playlist_title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredPlaylists = [
+    favoritesPlaylist,
+    ...playlists.filter((item) =>
+      item.playlist_title.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+  ];
 
   return (
     <View style={styles.container}>
