@@ -4,12 +4,13 @@ import {
   Text,
   TouchableOpacity,
   TextInput,
-  Image,
   StyleSheet,
   Alert,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ArrowLeft, Lock, Eye, EyeSlash, TickCircle } from 'iconsax-react-nativejs';
+import WibuReset from '../../assets/images/wibu/WibuReset';
 
 const ResetPasswordScreen = () => {
   const navigation = useNavigation();
@@ -66,13 +67,19 @@ const ResetPasswordScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
+          <ArrowLeft size="24" color="#ffffff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Đặt lại mật khẩu</Text>
+        <View style={styles.headerRight} />
+      </View>
       <View style={styles.container}>
         <View style={styles.logoContainer}>
-          <Image
-            source={require('../assets/images/wibu-excep.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
+          <WibuReset width={150} height={150} />
         </View>
         <View style={styles.textContainer}>
           <Text style={styles.title}>Đặt lại mật khẩu</Text>
@@ -81,7 +88,7 @@ const ResetPasswordScreen = () => {
         <View style={styles.formContainer}>
           <View style={styles.inputContainer}>
             <View style={styles.inputWrapper}>
-              <Text style={styles.inputIcon}>🔒</Text>
+              <Lock color="#ffffff" size={22} variant="Bold" />
               <TextInput
                 style={styles.input}
                 placeholder="Mật khẩu mới"
@@ -94,13 +101,17 @@ const ResetPasswordScreen = () => {
                 style={styles.eyeIcon}
                 onPress={() => setShowNewPassword(!showNewPassword)}
               >
-                <Text>{showNewPassword ? '👁️' : '👁️‍🗨️'}</Text>
+                {showNewPassword ? (
+                  <Eye size={24} color="#fff" variant="Linear" />
+                ) : (
+                  <EyeSlash size={24} color="#fff" variant="Linear" />
+                )}
               </TouchableOpacity>
             </View>
           </View>
           <View style={styles.inputContainer}>
             <View style={styles.inputWrapper}>
-              <Text style={styles.inputIcon}>🔒</Text>
+              <Lock color="#ffffff" size={22} variant="Bold" />
               <TextInput
                 style={styles.input}
                 placeholder="Xác nhận mật khẩu"
@@ -113,19 +124,30 @@ const ResetPasswordScreen = () => {
                 style={styles.eyeIcon}
                 onPress={() => setShowConfirmPassword(!showConfirmPassword)}
               >
-                <Text>{showConfirmPassword ? '👁️' : '👁️‍🗨️'}</Text>
+                {showConfirmPassword ? (
+                  <Eye size={24} color="#fff" variant="Linear" />
+                ) : (
+                  <EyeSlash size={24} color="#fff" variant="Linear" />
+                )}
               </TouchableOpacity>
             </View>
           </View>
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          {error ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          ) : null}
           <TouchableOpacity
             style={[styles.button, loading && styles.buttonDisabled]}
             onPress={handleSubmit}
             disabled={loading}
           >
-            <Text style={styles.buttonText}>
-              {loading ? 'Đang xử lý...' : 'Đặt lại mật khẩu'}
-            </Text>
+            <View style={styles.buttonContent}>
+              {!loading && <TickCircle size="20" color="#fff" variant="Bold" />}
+              <Text style={styles.buttonText}>
+                {loading ? 'Đang xử lý...' : 'Đặt lại mật khẩu'}
+              </Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -166,6 +188,40 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: { opacity: 0.7 },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: '#000',
+  },
+  backButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  headerRight: {
+    width: 40,
+  },
+  errorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 16,
+  },
+  errorText: {
+    color: '#ff4444',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
 });
 
 export default ResetPasswordScreen;

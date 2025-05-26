@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ArrowLeft, Timer1, TickCircle, CloseCircle, Send } from 'iconsax-react-nativejs';
 
 const OtpScreen = () => {
   const navigation = useNavigation();
@@ -97,7 +98,7 @@ const OtpScreen = () => {
           onPress={() => navigation.goBack()}
           style={styles.backButton}
         >
-          <Text style={styles.backIcon}>←</Text>
+          <ArrowLeft size="24" color="#ffffff" />
         </TouchableOpacity>
       </View>
       <View style={styles.container}>
@@ -121,14 +122,19 @@ const OtpScreen = () => {
               />
             ))}
           </View>
-          <Text style={styles.countdown}>
-            Thời gian còn lại: {Math.floor(otpExpiry / 60)}:
-            {(otpExpiry % 60).toString().padStart(2, '0')}
-          </Text>
+          <View style={styles.timerContainer}>
+            <Timer1 size="18" color="#1DB954" variant="Bold" />
+            <Text style={styles.countdown}>
+              Thời gian còn lại: {Math.floor(otpExpiry / 60)}:
+              {(otpExpiry % 60).toString().padStart(2, '0')}
+            </Text>
+          </View>
           <TouchableOpacity
             onPress={handleResendOtp}
             disabled={resendCountdown > 0}
+            style={styles.resendContainer}
           >
+            <Send size="18" color={resendCountdown > 0 ? "rgba(29, 185, 84, 0.5)" : "#1DB954"} variant="Bold" />
             <Text
               style={[
                 styles.resend,
@@ -139,7 +145,12 @@ const OtpScreen = () => {
               {resendCountdown > 0 ? `(${resendCountdown}s)` : ''}
             </Text>
           </TouchableOpacity>
-          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+          {error ? (
+            <View style={styles.errorContainer}>
+              <CloseCircle size="16" color="#ff4444" />
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          ) : null}
           <TouchableOpacity
             style={[
               styles.verifyButton,
@@ -149,9 +160,14 @@ const OtpScreen = () => {
             onPress={handleVerifyOtp}
             disabled={otpValues.join('').length !== 6 || loading}
           >
-            <Text style={styles.verifyButtonText}>
-              {loading ? 'Đang xử lý...' : 'Xác nhận'}
-            </Text>
+            <View style={styles.buttonContent}>
+              {otpValues.join('').length === 6 && !loading && (
+                <TickCircle size="20" color="#fff" variant="Bold" />
+              )}
+              <Text style={styles.verifyButtonText}>
+                {loading ? 'Đang xử lý...' : 'Xác nhận'}
+              </Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>

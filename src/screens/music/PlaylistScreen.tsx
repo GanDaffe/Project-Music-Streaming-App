@@ -1,26 +1,24 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  ScrollView,
-  TextInput,
-  StyleSheet,
-  Modal,
-  StatusBar,
-  Platform,
-  FlatList,
-  Animated,
   ActivityIndicator,
+  Animated,
+  FlatList,
+  Image,
+  Modal,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { SearchNormal1, CloseCircle, Add, ArrowLeft } from 'iconsax-react-nativejs';
-import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {Add, CloseCircle, SearchNormal1} from 'iconsax-react-nativejs';
+import {useNavigation} from '@react-navigation/native';
 import usePlaylistStore from '../../stores/usePlaylistStore';
-import { usePlayerStore } from '../../stores/usePlayerStore';
-import { useAuth } from '../../context/AuthContext';
+import {usePlayerStore} from '../../stores/usePlayerStore';
+import {useAuth} from '../../context/AuthContext';
 
 // Enum cho các tab
 const TabType = {
@@ -44,10 +42,10 @@ const PlaylistScreen = () => {
   const tabFade = useRef(new Animated.Value(1)).current;
 
   const navigation = useNavigation();
-  const { token } = useAuth();
+  const {token} = useAuth();
 
-  const { playlists, isLoading, fetchPlaylists, createPlaylist } = usePlaylistStore();
-  const { favoriteSongs } = usePlayerStore();
+  const {playlists, isLoading, fetchPlaylists, createPlaylist} = usePlaylistStore();
+  const {favoriteSongs} = usePlayerStore();
 
   // Lấy danh sách playlist và nghệ sĩ đã thích khi màn hình được tải
   useEffect(() => {
@@ -182,20 +180,20 @@ const PlaylistScreen = () => {
         playlistId: 'favorites',
         playlistTitle: 'Bài hát yêu thích',
         coverImage: playlist.coverImage,
-        songs: favoriteSongs
+        songs: favoriteSongs,
       });
     } else {
       // Original navigation for regular playlists
       navigation.navigate('SongListScreen', {
         playlistId: playlist.id,
         playlistTitle: playlist.playlist_title,
-        coverImage: playlist.coverImage || 'https://picsum.photos/200/200'
+        coverImage: playlist.coverImage || 'https://picsum.photos/200/200',
       });
     }
   };
 
   const handleArtistPress = (artist) => {
-    navigation.navigate('ProfileArtist', { artistId: artist.id });
+    navigation.navigate('ProfileArtist', {artistId: artist.id});
   };
 
   // Create a favorites playlist object
@@ -203,31 +201,31 @@ const PlaylistScreen = () => {
     id: 'favorites',
     playlist_title: 'Bài hát yêu thích',
     coverImage: 'https://picsum.photos/200/200?random=favorites',
-    songs: favoriteSongs
+    songs: favoriteSongs,
   };
 
   // Lọc playlist theo searchQuery
   const filteredPlaylists = [
     favoritesPlaylist,
     ...playlists.filter((item) =>
-      item.playlist_title.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+      item.playlist_title.toLowerCase().includes(searchQuery.toLowerCase()),
+    ),
   ];
 
   // Lọc nghệ sĩ theo searchQuery
   const filteredArtists = likedArtists.filter((artist) =>
-    artist.name.toLowerCase().includes(searchQuery.toLowerCase())
+    artist.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   // Render item cho danh sách playlist
-  const renderPlaylistItem = ({ item }) => (
+  const renderPlaylistItem = ({item}) => (
     <TouchableOpacity
       key={item.id}
       style={styles.playlistItem}
       onPress={() => handlePlaylistPress(item)}
     >
       <Image
-        source={{ uri: item.coverImage || 'https://picsum.photos/200/200' }}
+        source={{uri: item.coverImage || 'https://picsum.photos/200/200'}}
         style={styles.playlistCover}
       />
       <View style={styles.playlistInfo}>
@@ -240,14 +238,14 @@ const PlaylistScreen = () => {
   );
 
   // Render item cho danh sách nghệ sĩ
-  const renderArtistItem = ({ item }) => (
+  const renderArtistItem = ({item}) => (
     <TouchableOpacity
       key={item.id}
       style={styles.artistItem}
       onPress={() => handleArtistPress(item)}
     >
       <Image
-        source={{ uri: item.imageUrl }}
+        source={{uri: item.imageUrl}}
         style={styles.artistImage}
       />
       <View style={styles.artistInfo}>
@@ -263,8 +261,8 @@ const PlaylistScreen = () => {
   const renderContent = () => {
     // Hiển thị loading state
     if ((activeTab === TabType.ALL && (isLoading || isArtistsLoading)) ||
-        (activeTab === TabType.PLAYLISTS && isLoading) ||
-        (activeTab === TabType.ARTISTS && isArtistsLoading)) {
+      (activeTab === TabType.PLAYLISTS && isLoading) ||
+      (activeTab === TabType.ARTISTS && isArtistsLoading)) {
       return (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#1DB954" />
@@ -275,7 +273,7 @@ const PlaylistScreen = () => {
 
     // Hiển thị error state
     if ((activeTab === TabType.ARTISTS && artistsError) ||
-        (activeTab === TabType.ALL && artistsError)) {
+      (activeTab === TabType.ALL && artistsError)) {
       return (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{artistsError}</Text>
@@ -429,7 +427,7 @@ const PlaylistScreen = () => {
               <Text
                 style={[
                   styles.tabText,
-                  activeTab === TabType.ALL && styles.activeTabText
+                  activeTab === TabType.ALL && styles.activeTabText,
                 ]}
               >
                 Tất cả
@@ -443,7 +441,7 @@ const PlaylistScreen = () => {
               <Text
                 style={[
                   styles.tabText,
-                  activeTab === TabType.PLAYLISTS && styles.activeTabText
+                  activeTab === TabType.PLAYLISTS && styles.activeTabText,
                 ]}
               >
                 Playlist
@@ -457,7 +455,7 @@ const PlaylistScreen = () => {
               <Text
                 style={[
                   styles.tabText,
-                  activeTab === TabType.ARTISTS && styles.activeTabText
+                  activeTab === TabType.ARTISTS && styles.activeTabText,
                 ]}
               >
                 Nghệ sĩ
@@ -469,14 +467,14 @@ const PlaylistScreen = () => {
           <Animated.View
             style={[
               styles.tabIndicator,
-              { transform: [{ translateX }] }
+              {transform: [{translateX}]},
             ]}
           />
         </View>
 
         {/* Animated Content */}
         <Animated.ScrollView
-          style={[styles.content, { opacity: tabFade }]}
+          style={[styles.content, {opacity: tabFade}]}
         >
           {renderContent()}
         </Animated.ScrollView>

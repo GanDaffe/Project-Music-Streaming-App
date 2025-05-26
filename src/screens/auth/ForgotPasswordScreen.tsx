@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowLeft, Sms } from 'iconsax-react-nativejs';
+import { ArrowLeft, Sms, TickCircle, CloseCircle, Timer1 } from 'iconsax-react-nativejs';
 import WibuReset from '../../assets/images/wibu/WibuReset';
 
 const ForgotPasswordScreen = () => {
@@ -68,7 +68,10 @@ const ForgotPasswordScreen = () => {
           </View>
           <View style={styles.formContainer}>
             <View style={styles.inputContainer}>
-              <View style={styles.inputWrapper}>
+              <View style={[
+                styles.inputWrapper,
+                error ? styles.inputError : null
+              ]}>
                 <Sms color="#ffffff" variant="Bold" />
                 <TextInput
                   style={styles.input}
@@ -82,8 +85,14 @@ const ForgotPasswordScreen = () => {
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
+                {email && !error && <TickCircle size={20} color="#1DB954" />}
               </View>
-              {error ? <Text style={styles.errorText}>{error}</Text> : null}
+              {error ? (
+                <View style={styles.errorContainer}>
+                  <CloseCircle size={16} color="#ff4444" />
+                  <Text style={styles.errorText}>{error}</Text>
+                </View>
+              ) : null}
             </View>
             <TouchableOpacity
               style={[
@@ -93,13 +102,18 @@ const ForgotPasswordScreen = () => {
               onPress={handleResetPassword}
               disabled={loading || countdown > 0}
             >
-              <Text style={styles.buttonText}>
-                {loading
-                  ? 'Đang gửi...'
-                  : countdown > 0
-                  ? `Gửi lại sau ${countdown}s`
-                  : 'Gửi mã OTP'}
-              </Text>
+              {countdown > 0 ? (
+                <View style={styles.buttonContent}>
+                  <Timer1 size={20} color="#fff" />
+                  <Text style={styles.buttonText}>
+                    {`Gửi lại sau ${countdown}s`}
+                  </Text>
+                </View>
+              ) : (
+                <Text style={styles.buttonText}>
+                  {loading ? 'Đang gửi...' : 'Gửi mã OTP'}
+                </Text>
+              )}
             </TouchableOpacity>
           </View>
         </View>
