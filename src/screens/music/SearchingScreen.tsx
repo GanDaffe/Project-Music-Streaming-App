@@ -76,20 +76,44 @@ const SearchingScreen = () => {
   const handleSearch = async (query) => {
     setSearchQuery(query);
     setSuggestions([]);
+
     if (!query.trim()) {
       setSearchResults(null);
       return;
     }
+
     setLoading(true);
+
     try {
       const results = await apiSearch.search(query);
-      setSearchResults(results);
+
+      // Kiểm tra kết quả trả về
+      if (!results || (results.songs.length === 0 && results.artists.length === 0 && results.playlists.length === 0)) {
+        // Không có kết quả nào
+        setSearchResults({
+          songs: [],
+          artists: [],
+          playlists: []
+        });
+      } else {
+        setSearchResults(results);
+      }
+
       await saveSearchHistory(query);
     } catch (error) {
       console.error('Search error:', error);
+      // Đặt searchResults thành một đối tượng rỗng để hiển thị thông báo không tìm thấy
+      setSearchResults({
+        songs: [],
+        artists: [],
+        playlists: []
+      });
+
       if (error.message.includes('token')) {
         await logout();
-        alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+        Alert.alert('Phiên đăng nhập hết hạn', 'Vui lòng đăng nhập lại.');
+      } else {
+        Alert.alert('Lỗi tìm kiếm', 'Đã xảy ra lỗi khi tìm kiếm. Vui lòng thử lại sau.');
       }
     } finally {
       setLoading(false);
@@ -149,6 +173,9 @@ const SearchingScreen = () => {
       style={styles.resultItem}
       onPress={async () => {
         try {
+          // Hiển thị loading khi bắt đầu phát
+          setLoading(true);
+
           // Dừng và reset TrackPlayer
           await TrackPlayer.stop();
           await TrackPlayer.reset();
@@ -159,7 +186,7 @@ const SearchingScreen = () => {
             title: item.song_title,
             artist: item.artist_name,
             artwork: getFullMinioUrl(item.song_image_url),
-            url: getFullMinioUrl(item.song_audio_url), // Đảm bảo URL hợp lệ
+            url: getFullMinioUrl(item.song_audio_url),
           };
 
           // Thêm bài hát vào queue của TrackPlayer
@@ -179,13 +206,21 @@ const SearchingScreen = () => {
         } catch (error) {
           console.error("Error playing song:", error);
           Alert.alert('Lỗi', 'Không thể phát bài hát này. Vui lòng thử lại.');
+        } finally {
+          setLoading(false);
         }
       }}
     >
-      <Image source={{ uri: getFullMinioUrl(item.song_image_url) }} style={styles.artwork} />
+      <Image
+        source={{
+          uri: item.song_image_url ? getFullMinioUrl(item.song_image_url) : 'https://picsum.photos/100/100'
+        }}
+        style={styles.artwork}
+        defaultSource={require('../../assets/default-album.png')}
+      />
       <View style={styles.info}>
-        <Text style={styles.title}>{item.song_title}</Text>
-        <Text style={styles.subtitle}>{item.artist_name}</Text>
+        <Text style={styles.title} numberOfLines={1}>{item.song_title || 'Unknown Title'}</Text>
+        <Text style={styles.subtitle} numberOfLines={1}>{item.artist_name || 'Unknown Artist'}</Text>
       </View>
       <Play color="#1DB954" size={20} />
     </TouchableOpacity>
@@ -269,43 +304,81 @@ const SearchingScreen = () => {
             </View>
           )}
 
-          {loading && <Text style={styles.loading}>Đang tải...</Text>}
+          {loading && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#1DB954" />
+              <Text style={styles.loading}>Đang tìm kiếm...</Text>
+            </View>
+          )}
           {searchResults && (
             <View style={styles.resultsContainer}>
-              {searchResults.songs.length > 0 && (
+              {searchResults.songs.length > 0 ? (
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Bài hát</Text>
                   <FlatList
                     data={searchResults.songs}
                     renderItem={renderSongItem}
-                    keyExtractor={(item) => item.song_id}
+                    keyExtractor={(item) => item.song_id.toString()}
                     horizontal
                     showsHorizontalScrollIndicator={false}
+                    initialNumToRender={5}
+                    maxToRenderPerBatch={10}
+                    windowSize={5}
                   />
                 </View>
-              )}
-              {searchResults.artists.length > 0 && (
+              ) : searchQuery && !loading ? (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Bài hát</Text>
+                  <Text style={styles.noResultsText}>Không tìm thấy bài hát nào</Text>
+                </View>
+              ) : null}
+
+              {searchResults.artists.length > 0 ? (
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Nghệ sĩ</Text>
                   <FlatList
                     data={searchResults.artists}
                     renderItem={renderArtistItem}
-                    keyExtractor={(item) => item.artist_id}
+                    keyExtractor={(item) => item.artist_id.toString()}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                   />
                 </View>
-              )}
-              {searchResults.playlists.length > 0 && (
+              ) : searchQuery && !loading ? (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Nghệ sĩ</Text>
+                  <Text style={styles.noResultsText}>Không tìm thấy nghệ sĩ nào</Text>
+                </View>
+              ) : null}
+
+              {searchResults.playlists.length > 0 ? (
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Playlist</Text>
                   <FlatList
                     data={searchResults.playlists}
                     renderItem={renderPlaylistItem}
-                    keyExtractor={(item) => item.playlist_id}
+                    keyExtractor={(item) => item.playlist_id.toString()}
                     horizontal
                     showsHorizontalScrollIndicator={false}
                   />
+                </View>
+              ) : searchQuery && !loading ? (
+                <View style={styles.section}>
+                  <Text style={styles.sectionTitle}>Playlist</Text>
+                  <Text style={styles.noResultsText}>Không tìm thấy playlist nào</Text>
+                </View>
+              ) : null}
+
+              {searchQuery &&
+               !loading &&
+               searchResults.songs.length === 0 &&
+               searchResults.artists.length === 0 &&
+               searchResults.playlists.length === 0 && (
+                <View style={styles.noResultsContainer}>
+                  <Text style={styles.noResultsTitle}>Không tìm thấy kết quả nào</Text>
+                  <Text style={styles.noResultsSubtitle}>
+                    Hãy thử tìm kiếm với từ khóa khác
+                  </Text>
                 </View>
               )}
             </View>
@@ -409,17 +482,19 @@ const styles = StyleSheet.create({
   resultItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 8,
+    padding: 12,
     backgroundColor: '#282828',
     borderRadius: 4,
     marginRight: 10,
-    width: 200,
+    marginBottom: 8,
+    width: 220,
   },
   artwork: {
     width: 50,
     height: 50,
     borderRadius: 4,
     marginRight: 12,
+    backgroundColor: '#333',
   },
   info: {
     flex: 1,
@@ -443,6 +518,38 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 50,
     fontSize: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  noResultsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 40,
+    paddingHorizontal: 20,
+  },
+  noResultsTitle: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  noResultsSubtitle: {
+    color: '#b3b3b3',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  noResultsText: {
+    color: '#b3b3b3',
+    fontSize: 14,
+    textAlign: 'center',
+    marginTop: 10,
+    marginBottom: 20,
   },
 });
 
