@@ -1,201 +1,178 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   Modal,
-  TouchableOpacity,
   StyleSheet,
-  FlatList,
-  ActivityIndicator,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Image,
+  ScrollView,
+  Dimensions,
 } from 'react-native';
-import { CloseCircle, Heart, Add } from 'iconsax-react-nativejs';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 import { usePlayerStore } from '../stores/usePlayerStore';
-import usePlaylistStore from '../stores/usePlaylistStore';
-import Toast from 'react-native-toast-message';
 
-interface MoreOptionsModalProps {
-  visible: boolean;
-  onClose: () => void;
-  song: any;
-}
+const { width, height } = Dimensions.get('window');
 
-const MoreOptionsModal = ({ visible, onClose, song }: MoreOptionsModalProps) => {
-  const [showPlaylists, setShowPlaylists] = useState(false);
-  const { addToFavorites } = usePlayerStore();
-  const { playlists, fetchPlaylists, isLoading } = usePlaylistStore();
-  const { addSongToPlaylist } = usePlayerStore();
+const MoreOptionsModal = ({ visible, onClose, song }) => {
+  const navigation = useNavigation();
+  const { setCurrentTrack, togglePlay } = usePlayerStore();
 
-  useEffect(() => {
-    if (visible && showPlaylists) {
-      fetchPlaylists();
-    }
-  }, [visible, showPlaylists, fetchPlaylists]);
+  if (!song) return null;
 
-  const handleAddToFavorites = async () => {
-    if (song) {
-      await addToFavorites(song);
-      Toast.show({
-        type: 'success',
-        text1: 'Thành công',
-        text2: 'Đã thêm bài hát vào danh sách yêu thích',
-      });
+  const handlePlaySong = async () => {
+    try {
+      // Cập nhật trạng thái trong store
+      await setCurrentTrack(song.id, song);
+
+      // Phát bài hát
+      await togglePlay();
+
       onClose();
+    } catch (error) {
+      console.error('Lỗi khi phát bài hát:', error);
     }
   };
 
   const handleAddToPlaylist = () => {
-    setShowPlaylists(true);
+    onClose();
+    navigation.navigate('AddToPlaylistScreen', { song });
   };
 
-  const handleSelectPlaylist = async (playlistId) => {
-    if (song && playlistId) {
-      const success = await addSongToPlaylist(song.id, playlistId);
-      if (success) {
-        Toast.show({
-          type: 'success',
-          text1: 'Thành công',
-          text2: 'Đã thêm bài hát vào playlist',
-        });
-      } else {
-        Toast.show({
-          type: 'error',
-          text1: 'Lỗi',
-          text2: 'Không thể thêm bài hát vào playlist',
-        });
-      }
-      setShowPlaylists(false);
-      onClose();
-    }
+  const handleViewArtist = () => {
+    onClose();
+    // Nếu đang ở màn hình nghệ sĩ, không cần chuyển hướng
+    // Nếu không, chuyển đến màn hình nghệ sĩ
+    // navigation.navigate('ProfileArtist', { artistId: song.artistId });
   };
 
-  const renderPlaylistItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.playlistItem}
-      onPress={() => handleSelectPlaylist(item.id)}
-    >
-      <Text style={styles.playlistName}>{item.playlist_title}</Text>
-    </TouchableOpacity>
-  );
+  const handleShareSong = () => {
+    // Xử lý chia sẻ bài hát
+    onClose();
+  };
+
+  const handleDownloadSong = () => {
+    // Xử lý tải bài hát
+    onClose();
+  };
 
   return (
     <Modal
-      visible={visible}
-      transparent={true}
       animationType="slide"
+      transparent={true}
+      visible={visible}
       onRequestClose={onClose}
     >
-      <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>
-              {showPlaylists ? 'Chọn playlist' : 'Tùy chọn'}
-            </Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <CloseCircle size={24} color="#ffffff" />
-            </TouchableOpacity>
-          </View>
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.overlay}>
+          <TouchableWithoutFeedback>
+            <View style={styles.modalContent}>
+              <View style={styles.songInfoContainer}>
+                <Image source={{ uri: song.artwork }} style={styles.songImage} />
+                <View style={styles.songDetails}>
+                  <Text style={styles.songTitle} numberOfLines={1}>{song.title}</Text>
+                  <Text style={styles.songArtist} numberOfLines={1}>{song.artist}</Text>
+                </View>
+                <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                  <Icon name="close" size={24} color="#fff" />
+                </TouchableOpacity>
+              </View>
 
-          {!showPlaylists ? (
-            <View style={styles.optionsContainer}>
-              <TouchableOpacity
-                style={styles.optionItem}
-                onPress={handleAddToFavorites}
-              >
-                <Heart size={24} color="#ffffff" />
-                <Text style={styles.optionText}>Thêm vào yêu thích</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity
-                style={styles.optionItem}
-                onPress={handleAddToPlaylist}
-              >
-                <Add size={24} color="#ffffff" />
-                <Text style={styles.optionText}>Thêm vào playlist</Text>
-              </TouchableOpacity>
+              <ScrollView style={styles.optionsContainer}>
+                <TouchableOpacity style={styles.option} onPress={handlePlaySong}>
+                  <Icon name="play-circle-outline" size={24} color="#fff" />
+                  <Text style={styles.optionText}>Phát</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.option} onPress={handleAddToPlaylist}>
+                  <Icon name="add-circle-outline" size={24} color="#fff" />
+                  <Text style={styles.optionText}>Thêm vào playlist</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.option} onPress={handleViewArtist}>
+                  <Icon name="person-outline" size={24} color="#fff" />
+                  <Text style={styles.optionText}>Xem nghệ sĩ</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.option} onPress={handleShareSong}>
+                  <Icon name="share-social-outline" size={24} color="#fff" />
+                  <Text style={styles.optionText}>Chia sẻ</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={styles.option} onPress={handleDownloadSong}>
+                  <Icon name="download-outline" size={24} color="#fff" />
+                  <Text style={styles.optionText}>Tải xuống</Text>
+                </TouchableOpacity>
+              </ScrollView>
             </View>
-          ) : (
-            <View style={styles.playlistsContainer}>
-              {isLoading ? (
-                <ActivityIndicator color="#1DB954" size="large" />
-              ) : (
-                <FlatList
-                  data={playlists}
-                  renderItem={renderPlaylistItem}
-                  keyExtractor={(item) => item.id.toString()}
-                  ListEmptyComponent={
-                    <Text style={styles.emptyText}>Không có playlist nào</Text>
-                  }
-                />
-              )}
-            </View>
-          )}
+          </TouchableWithoutFeedback>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  modalOverlay: {
+  overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: '#212121',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingBottom: 30,
-    maxHeight: '70%',
+    backgroundColor: '#282828',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    paddingTop: 16,
+    paddingBottom: 32,
+    maxHeight: height * 0.7,
   },
-  modalHeader: {
+  songInfoContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
   },
-  modalTitle: {
-    fontSize: 18,
+  songImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 4,
+  },
+  songDetails: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  songTitle: {
+    color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#ffffff',
+  },
+  songArtist: {
+    color: '#b3b3b3',
+    fontSize: 14,
+    marginTop: 2,
   },
   closeButton: {
-    padding: 4,
+    padding: 8,
   },
   optionsContainer: {
-    padding: 16,
+    maxHeight: height * 0.5,
   },
-  optionItem: {
+  option: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 16,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#333',
+    borderBottomColor: 'rgba(255, 255, 255, 0.05)',
   },
   optionText: {
+    color: '#fff',
     fontSize: 16,
-    color: '#ffffff',
     marginLeft: 16,
-  },
-  playlistsContainer: {
-    padding: 16,
-    maxHeight: 300,
-  },
-  playlistItem: {
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#333',
-  },
-  playlistName: {
-    fontSize: 16,
-    color: '#ffffff',
-  },
-  emptyText: {
-    color: '#888',
-    textAlign: 'center',
-    marginTop: 20,
   },
 });
 
