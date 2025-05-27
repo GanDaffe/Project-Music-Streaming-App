@@ -1,23 +1,21 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StatusBar, View, ActivityIndicator, StyleSheet } from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {ActivityIndicator, StatusBar, StyleSheet, View} from 'react-native';
 
-import { AuthProvider, useAuth } from './context/AuthContext';
-import LoginScreen from './screens/auth/LoginScreen';
-import RegisterScreen from './screens/auth/RegisterScreen';
-import ForgotPasswordScreen from './screens/auth/ForgotPasswordScreen';
+import {AuthProvider, useAuth} from './context/AuthContext';
 import NowPlayingScreen from './screens/music/NowPlayingScreen';
 import MainApp from './screens/music/MainApp';
 import ProfileScreen from './screens/other/sidebar-screen/ProfileScreen';
 import IntroductionScreen from './screens/other/sidebar-screen/IntroductionScreen';
-import { useSetupPlayer } from './hooks/useSetupTrackPlayer';
+import {useSetupPlayer} from './hooks/useSetupTrackPlayer';
 import History from './screens/other/sidebar-screen/History';
+
 const Stack = createStackNavigator();
 
 const AppNavigator = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const {isAuthenticated, isLoading} = useAuth();
 
   if (isLoading) {
     return (
@@ -31,16 +29,23 @@ const AppNavigator = () => {
     <NavigationContainer>
       <StatusBar
         backgroundColor="rgba(18, 18, 18, 1)"
-        barStyle="light-content" translucent
+        barStyle="light-content"
+        translucent
         translucent={false}
       />
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
         {isAuthenticated ? (
           <>
             <Stack.Screen name="MainApp" component={MainApp} />
-            <Stack.Screen name="NowPlayingScreen" component={NowPlayingScreen} />
+            <Stack.Screen
+              name="NowPlayingScreen"
+              component={NowPlayingScreen}
+            />
             <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-            <Stack.Screen name="IntroductionScreen" component={IntroductionScreen} />
+            <Stack.Screen
+              name="IntroductionScreen"
+              component={IntroductionScreen}
+            />
             <Stack.Screen name="History" component={History} />
             {/* <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
@@ -52,9 +57,15 @@ const AppNavigator = () => {
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
             <Stack.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen} /> */}
             <Stack.Screen name="MainApp" component={MainApp} />
-            <Stack.Screen name="NowPlayingScreen" component={NowPlayingScreen} />
+            <Stack.Screen
+              name="NowPlayingScreen"
+              component={NowPlayingScreen}
+            />
             <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-            <Stack.Screen name="IntroductionScreen" component={IntroductionScreen} />
+            <Stack.Screen
+              name="IntroductionScreen"
+              component={IntroductionScreen}
+            />
             <Stack.Screen name="History" component={History} />
           </>
         )}
@@ -67,7 +78,7 @@ const App = () => {
   const onLoad = async () => {
     console.log('track player setup...');
   };
-  useSetupPlayer({ onLoad });
+  useSetupPlayer({onLoad});
   return (
     <SafeAreaProvider>
       <AuthProvider>

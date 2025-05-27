@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   Animated,
   Image,
   SafeAreaView,
@@ -9,10 +10,16 @@ import {
   View,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import { User, Notification, Clock, Setting2, InfoCircle, Logout, ArrowRight} from 'iconsax-react-nativejs';
-// import LoginScreen from '../screens/auth/LoginScreen';
-// import { logout } from '../context/AuthContext';
+import {
+  ArrowRight,
+  Clock,
+  InfoCircle,
+  Logout,
+  Setting2,
+  User,
+} from 'iconsax-react-nativejs';
 import AuthService from '../service/auth';
+
 // Import theme constants
 const COLORS = {
   background: '#121212',
@@ -47,43 +54,38 @@ const Sidebar: React.FC<SidebarProps> = ({isVisible, onClose, userData, translat
   const navigation = useNavigation();
 
   const handleLogout = async () => {
-      try {
-        await AuthService.logout();
-        navigation.navigate('LoginScreen');
-      } catch (error) {
-        console.error('Lỗi đăng xuất:', error);
-        Alert.alert('Lỗi', 'Không thể đăng xuất');
-      }
+    try {
+      await AuthService.logout();
+      navigation.navigate('LoginScreen');
+    } catch (error) {
+      console.error('Lỗi đăng xuất:', error);
+      Alert.alert('Lỗi', 'Không thể đăng xuất');
+    }
   };
 
   const menuItems: MenuItem[] = [
-     {
-      icon: <User color="#ffffff" variant="Bold"/>,
+    {
+      icon: <User color="#ffffff" variant="Bold" />,
       title: 'Hồ sơ',
       onPress: () => navigation.navigate('ProfileScreen'),
     },
     {
-      icon: <Notification color="#ffffff" variant="Bold"/>,
-      title: 'Thông báo',
-      onPress: () => navigation.navigate('FavoriteSongsScreen'),
-    },
-    {
-      icon: <Clock color="#ffffff" variant="Bold"/>,
+      icon: <Clock color="#ffffff" variant="Bold" />,
       title: 'Lịch sử',
       onPress: () => navigation.navigate('History'),
     },
     {
-      icon: <Setting2 color="#ffffff" variant="Bold"/>,
+      icon: <Setting2 color="#ffffff" variant="Bold" />,
       title: 'Cài đặt',
       onPress: () => navigation.navigate('SettingsScreen'),
     },
     {
-      icon: <InfoCircle color="#ffffff" variant="Bold"/>,
+      icon: <InfoCircle color="#ffffff" variant="Bold" />,
       title: 'Giới thiệu',
       onPress: () => navigation.navigate('IntroductionScreen'),
     },
     {
-      icon: <Logout color="#ffffff" variant="Bold"/>,
+      icon: <Logout color="#ffffff" variant="Bold" />,
       title: 'Đăng xuất',
       onPress: () => handleLogout(),
     },
@@ -103,7 +105,7 @@ const Sidebar: React.FC<SidebarProps> = ({isVisible, onClose, userData, translat
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <ArrowRight color="#ffffff"/>
+            <ArrowRight color="#ffffff" />
           </TouchableOpacity>
         </View>
 
